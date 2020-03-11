@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Date    : since 2018-02-06 02:26
 # @Author  : Gin (gin.lance.inside@hotmail.com)
-# @Link    : 
+# @Link    :
 # @Disc    : add remove show and list totp tokens in the terminal
 
 from __future__ import print_function
@@ -21,16 +21,13 @@ OID_LEN = 6
 ISSUER_LEN = 16
 REMARK_LEN = 16
 OTP_LEN = 16
-JSON_URL = os.path.expanduser("~") + os.sep + '.mina.json'
+JSON_URL = os.path.expanduser("~") + os.sep + ".mina.json"
 
 # dev json url
 # JSON_URL = './.mina.json'
 
 # configure the basic logging level
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s")
 
 # load tokens from json file
 def load_json(json_url):
@@ -40,20 +37,24 @@ def load_json(json_url):
         else:
             raise Warning
 
+
 # update token to json file
 def upd_json(data, json_url):
     with open(json_url, "w") as f:
-        json.dump(data, f, sort_keys=True, indent=4, separators=(',', ':'))
+        json.dump(data, f, sort_keys=True, indent=4, separators=(",", ":"))
+
 
 # show time process
 def time_process():
     try:
         sec = datetime.datetime.now().second
         sharp_c = sec % 30
-        b = '#' * sharp_c + ''
+        b = "#" * sharp_c + ""
         while sharp_c <= 30:
             expired_time = 30 - sharp_c
-            sys.stdout.write("expired after: [" + b.ljust(30) + "] " + str(expired_time).rjust(2) + "s\r")
+            sys.stdout.write(
+                "expired after: [" + b.ljust(30) + "] " + str(expired_time).rjust(2) + "s\r"
+            )
             sys.stdout.flush()
             time.sleep(1)
             b = "#" + b
@@ -61,6 +62,7 @@ def time_process():
         print("tokens have been expired, try to list or show again..")
     except KeyboardInterrupt:
         print("\nthe script has been quited manually.")
+
 
 # list all tokens
 def list():
@@ -71,7 +73,13 @@ def list():
     except Warning:
         print("WARNING: there is no any otp tokens in the .mina.json file.")
     else:
-        print("OID".center(OID_LEN, "="), "ISSUER".center(ISSUER_LEN, "="), "REMARK".center(REMARK_LEN, "="), "OTP".center(OTP_LEN, "="), sep=' ')
+        print(
+            "OID".center(OID_LEN, "="),
+            "ISSUER".center(ISSUER_LEN, "="),
+            "REMARK".center(REMARK_LEN, "="),
+            "OTP".center(OTP_LEN, "="),
+            sep=" ",
+        )
         for oid, token in enumerate(tokens):
             # generate tmp TOTO object and calculate the token
             secret = token["secret"]
@@ -79,9 +87,16 @@ def list():
             issuer = token["issuer"]
             totp_tmp = pyotp.TOTP(secret)
             current_otp = totp_tmp.now()
-            print(str(oid).center(OID_LEN), issuer.center(ISSUER_LEN), remark.center(REMARK_LEN), current_otp.center(OTP_LEN), sep=' ')
+            print(
+                str(oid).center(OID_LEN),
+                issuer.center(ISSUER_LEN),
+                remark.center(REMARK_LEN),
+                current_otp.center(OTP_LEN),
+                sep=" ",
+            )
 
         time_process()
+
 
 # show a token on-time
 def show(oid):
@@ -92,7 +107,13 @@ def show(oid):
     except Warning:
         print("WARNING: there is no any otp tokens in the .mina.json file.")
     else:
-        print("OID".center(OID_LEN, "="), "ISSUER".center(ISSUER_LEN, "="), "REMARK".center(REMARK_LEN, "="), "OTP".center(OTP_LEN, "="), sep=' ')
+        print(
+            "OID".center(OID_LEN, "="),
+            "ISSUER".center(ISSUER_LEN, "="),
+            "REMARK".center(REMARK_LEN, "="),
+            "OTP".center(OTP_LEN, "="),
+            sep=" ",
+        )
         token = tokens[int(oid)]
         issuer = token["issuer"]
         secret = token["secret"]
@@ -100,9 +121,16 @@ def show(oid):
         # generate tmp TOTO object and calculate the token
         totp_tmp = pyotp.TOTP(secret)
         current_otp = totp_tmp.now()
-        print(oid.center(OID_LEN), issuer.center(ISSUER_LEN), remark.center(REMARK_LEN), current_otp.center(OTP_LEN), sep=' ')
+        print(
+            oid.center(OID_LEN),
+            issuer.center(ISSUER_LEN),
+            remark.center(REMARK_LEN),
+            current_otp.center(OTP_LEN),
+            sep=" ",
+        )
 
         time_process()
+
 
 # add a new token
 def add(otp):
@@ -118,6 +146,7 @@ def add(otp):
         tokens.append(otp)
         upd_json(tokens, JSON_URL)
 
+
 # remove a token
 def remove(oid):
     try:
@@ -129,6 +158,7 @@ def remove(oid):
     else:
         tokens.pop(int(oid))
         upd_json(tokens, JSON_URL)
+
 
 # import from a local json file
 def import_from(file_path):
@@ -145,89 +175,51 @@ def import_from(file_path):
             print("ERROR: " + file_path + " is not a file!")
         except Warning:
             print("WARNING: there is no any otp tokens in the file!")
-        else:  
+        else:
             tokens = tokens + append_tokens
             upd_json(tokens, JSON_URL)
+
 
 # the main function to control the script
 def main():
     # Define the basic_parser and subparsers
-    logging.debug('Initial basic_parser')
+    logging.debug("Initial basic_parser")
 
-    _desc = 'MinaOTP is a two-factor authentication tool that runs in the terminal'
+    _desc = "MinaOTP is a two-factor authentication tool that runs in the terminal"
     basic_parser = argparse.ArgumentParser(description=_desc)
-    subparsers = basic_parser.add_subparsers(
-        dest="command",
-        help="Available commands"
-    )
+    subparsers = basic_parser.add_subparsers(dest="command", help="Available commands")
 
     # Subparser for the list command
     logging.debug("Initial list subparser")
 
-    list_parser = subparsers.add_parser(
-        "list",
-        help="List all tokens."
-    )
+    list_parser = subparsers.add_parser("list", help="List all tokens.")
 
     # Subparser for the add command
     logging.debug("Initial add subparser")
 
-    add_parser = subparsers.add_parser(
-        "add",
-        help="Add a new token."
-    )
+    add_parser = subparsers.add_parser("add", help="Add a new token.")
     # OTP optional arguments
-    add_parser.add_argument(
-        "--secret",
-        required=True,
-        help="Secret info to generate otp object."
-    )
-    add_parser.add_argument(
-        "--issuer",
-        required=True,
-        help="Issuer info about new otp object."
-    )
-    add_parser.add_argument(
-        "--remark",
-        required=True,
-        help="Remark info about new otp object."
-    )
+    add_parser.add_argument("--secret", required=True, help="Secret info to generate otp object.")
+    add_parser.add_argument("--issuer", required=True, help="Issuer info about new otp object.")
+    add_parser.add_argument("--remark", required=True, help="Remark info about new otp object.")
 
     # Subparser for the remove command
     logging.debug("Initial remove subparser")
 
-    remove_parser = subparsers.add_parser(
-        "remove",
-        help="Remove a token."
-    )
-    remove_parser.add_argument(
-        "oid",
-        help="oid of the token"
-    )
+    remove_parser = subparsers.add_parser("remove", help="Remove a token.")
+    remove_parser.add_argument("oid", help="oid of the token")
 
     # Subparser for the show command
     logging.debug("Initial show subparser")
 
-    show_parser = subparsers.add_parser(
-        "show",
-        help="Show a token on-time"
-    )
-    show_parser.add_argument(
-        "oid",
-        help="oid of the token"
-    )
+    show_parser = subparsers.add_parser("show", help="Show a token on-time")
+    show_parser.add_argument("oid", help="oid of the token")
 
     # Subparser for the import command
     logging.debug("Initial import subparser")
 
-    import_parser = subparsers.add_parser(
-        "import",
-        help="Import tokens from a local json file"
-    )
-    import_parser.add_argument(
-        "file_path",
-        help="path of the local json file"
-    )
+    import_parser = subparsers.add_parser("import", help="Import tokens from a local json file")
+    import_parser.add_argument("file_path", help="path of the local json file")
 
     # handle the args input by user
     args = basic_parser.parse_args()
@@ -238,11 +230,7 @@ def main():
     if command == "list":
         list()
     if command == "add":
-        otp = {
-            "secret": args.secret,
-            "issuer": args.issuer,
-            "remark": args.remark
-        }
+        otp = {"secret": args.secret, "issuer": args.issuer, "remark": args.remark}
         add(otp)
     if command == "remove":
         target_oid = args.oid
@@ -255,5 +243,5 @@ def main():
         import_from(file_path)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
