@@ -6,15 +6,17 @@
 # @Disc    : add remove show and list totp tokens in the terminal
 
 from __future__ import print_function
+
+import argparse
+import datetime
 import json
 import logging
-import argparse
-import pyotp
 import os
 import os.path
-import time
-import datetime
+import pyotp
 import sys
+import time
+
 
 # global variable
 OID_LEN = 6
