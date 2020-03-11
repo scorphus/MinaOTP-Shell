@@ -8,7 +8,6 @@
 import argparse
 import datetime
 import json
-import logging
 import os
 import os.path
 import pyotp
@@ -20,9 +19,6 @@ ISSUER_LEN = 16
 REMARK_LEN = 16
 OTP_LEN = 16
 JSON_URL = os.path.expanduser("~") + os.sep + ".mina.json"
-
-# configure the basic logging level
-logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s")
 
 
 # load tokens from json file
@@ -167,20 +163,14 @@ def import_from(file_path):
 # the main function to control the script
 def main():
     # Define the basic_parser and subparsers
-    logging.debug("Initial basic_parser")
-
     _desc = "MinaOTP is a two-factor authentication tool that runs in the terminal"
     basic_parser = argparse.ArgumentParser(description=_desc)
     subparsers = basic_parser.add_subparsers(dest="command", help="Available commands")
 
     # Subparser for the list command
-    logging.debug("Initial list subparser")
-
     subparsers.add_parser("list", help="List all tokens.")
 
     # Subparser for the add command
-    logging.debug("Initial add subparser")
-
     add_parser = subparsers.add_parser("add", help="Add a new token.")
     # OTP optional arguments
     add_parser.add_argument("--secret", required=True, help="Secret info to generate otp object.")
@@ -188,20 +178,14 @@ def main():
     add_parser.add_argument("--remark", required=True, help="Remark info about new otp object.")
 
     # Subparser for the remove command
-    logging.debug("Initial remove subparser")
-
     remove_parser = subparsers.add_parser("remove", help="Remove a token.")
     remove_parser.add_argument("oid", help="oid of the token")
 
     # Subparser for the show command
-    logging.debug("Initial show subparser")
-
     show_parser = subparsers.add_parser("show", help="Show a token on-time")
     show_parser.add_argument("oid", help="oid of the token")
 
     # Subparser for the import command
-    logging.debug("Initial import subparser")
-
     import_parser = subparsers.add_parser("import", help="Import tokens from a local json file")
     import_parser.add_argument("file_path", help="path of the local json file")
 
