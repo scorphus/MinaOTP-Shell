@@ -22,17 +22,17 @@ JSON_URL = os.path.expanduser("~") + os.sep + ".mina.json"
 
 
 # load tokens from json file
-def load_json(json_url):
-    with open(json_url, "r") as f:
-        if os.path.getsize(json_url):
+def load_json():
+    with open(JSON_URL, "r") as f:
+        if os.path.getsize(JSON_URL):
             return json.load(f)
         else:
             raise Warning
 
 
 # update token to json file
-def upd_json(data, json_url):
-    with open(json_url, "w") as f:
+def upd_json(data):
+    with open(JSON_URL, "w") as f:
         json.dump(data, f, sort_keys=True, indent=4, separators=(",", ":"))
 
 
@@ -44,111 +44,87 @@ def print_expiry():
     print("expires after: {}s".format(expired_time))
 
 
-# list all tokens
-def list_tokens():
+# print a line
+def print_line(oid, issuer, remark, otp, fillchar=" "):
+    print(
+        oid.center(OID_LEN, fillchar),
+        issuer.center(ISSUER_LEN, fillchar),
+        remark.center(REMARK_LEN, fillchar),
+        otp.center(OTP_LEN, fillchar),
+    )
+
+
+# print the header
+def print_header():
+    print_line("OID", "ISSUER", "REMARK", "OTP", fillchar="=")
+
+
+# generate OTP for a token
+def gen_otp(token):
+    return pyotp.TOTP(token["secret"]).now()
+
+
+# print a token
+def print_token(oid, token):
+    print_line(str(oid), token["issuer"], token["remark"], gen_otp(token))
+
+
+# load tokens from JSON file
+def load_tokens():
     try:
-        tokens = load_json(JSON_URL)
+        return load_json()
     except IOError:
         print("ERROR: there is no .mina.json file")
     except Warning:
         print("WARNING: there is no any otp tokens in the .mina.json file.")
-    else:
-        print(
-            "OID".center(OID_LEN, "="),
-            "ISSUER".center(ISSUER_LEN, "="),
-            "REMARK".center(REMARK_LEN, "="),
-            "OTP".center(OTP_LEN, "="),
-            sep=" ",
-        )
-        for oid, token in enumerate(tokens):
-            # generate tmp TOTO object and calculate the token
-            secret = token["secret"]
-            remark = token["remark"]
-            issuer = token["issuer"]
-            totp_tmp = pyotp.TOTP(secret)
-            current_otp = totp_tmp.now()
-            print(
-                str(oid).center(OID_LEN),
-                issuer.center(ISSUER_LEN),
-                remark.center(REMARK_LEN),
-                current_otp.center(OTP_LEN),
-                sep=" ",
-            )
 
+
+# list all tokens
+def list_tokens():
+    tokens = load_tokens()
+    if tokens:
+        print_header()
+        for oid, token in enumerate(tokens):
+            print_token(oid, token)
         print_expiry()
 
 
 # show a token on-time
 def show(oid):
-    try:
-        tokens = load_json(JSON_URL)
-    except IOError:
-        print("ERROR: there is no .mina.json file")
-    except Warning:
-        print("WARNING: there is no any otp tokens in the .mina.json file.")
-    else:
-        print(
-            "OID".center(OID_LEN, "="),
-            "ISSUER".center(ISSUER_LEN, "="),
-            "REMARK".center(REMARK_LEN, "="),
-            "OTP".center(OTP_LEN, "="),
-            sep=" ",
-        )
-        token = tokens[int(oid)]
-        issuer = token["issuer"]
-        secret = token["secret"]
-        remark = token["remark"]
-        # generate tmp TOTO object and calculate the token
-        totp_tmp = pyotp.TOTP(secret)
-        current_otp = totp_tmp.now()
-        print(
-            oid.center(OID_LEN),
-            issuer.center(ISSUER_LEN),
-            remark.center(REMARK_LEN),
-            current_otp.center(OTP_LEN),
-            sep=" ",
-        )
-
+    tokens = load_tokens()
+    if tokens:
+        print_header()
+        print_token(oid, tokens[int(oid)])
         print_expiry()
 
 
 # add a new token
 def add(otp):
     try:
-        tokens = load_json(JSON_URL)
+        tokens = load_json()
     except IOError:
         print("ERROR: there is no .mina.json file")
     except Warning:
         tokens = []
         tokens.append(otp)
-        upd_json(tokens, JSON_URL)
+        upd_json(tokens)
     else:
         tokens.append(otp)
-        upd_json(tokens, JSON_URL)
+        upd_json(tokens)
 
 
 # remove a token
 def remove(oid):
-    try:
-        tokens = load_json(JSON_URL)
-    except IOError:
-        print("ERROR: there is no .mina.json file")
-    except Warning:
-        print("WARNING: there is no any otp tokens in the .mina.json file.")
-    else:
+    tokens = load_tokens()
+    if tokens:
         tokens.pop(int(oid))
-        upd_json(tokens, JSON_URL)
+        upd_json(tokens)
 
 
 # import from a local json file
 def import_from(file_path):
-    try:
-        tokens = load_json(JSON_URL)
-    except IOError:
-        print("ERROR: there is no .mina.json file")
-    except Warning:
-        print("WARNING: there is no any otp tokens in the .mina.json file.")
-    else:
+    tokens = load_tokens()
+    if tokens:
         try:
             append_tokens = load_json(file_path)
         except IOError:
@@ -157,7 +133,7 @@ def import_from(file_path):
             print("WARNING: there is no any otp tokens in the file!")
         else:
             tokens = tokens + append_tokens
-            upd_json(tokens, JSON_URL)
+            upd_json(tokens)
 
 
 # the main function to control the script
