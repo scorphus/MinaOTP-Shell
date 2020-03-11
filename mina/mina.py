@@ -33,7 +33,7 @@ def load_json():
 # update token to json file
 def upd_json(data):
     with open(JSON_URL, "w") as f:
-        json.dump(data, f, sort_keys=True, indent=4, separators=(",", ":"))
+        json.dump(data, f)
 
 
 # show expiry
