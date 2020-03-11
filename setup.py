@@ -9,12 +9,6 @@ from setuptools import setup
 import os
 
 
-# here = path.abspath(path.dirname(__file__))
-
-# Get the long description from the README file
-# with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-#     long_description = f.read()
-
 # touch a basic .mina.json file if NOT EXIST
 default = os.path.expanduser("~") + os.sep + ".mina.json"
 if not os.path.isfile(default):

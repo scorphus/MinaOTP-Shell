@@ -25,9 +25,6 @@ REMARK_LEN = 16
 OTP_LEN = 16
 JSON_URL = os.path.expanduser("~") + os.sep + ".mina.json"
 
-# dev json url
-# JSON_URL = './.mina.json'
-
 # configure the basic logging level
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s")
 
