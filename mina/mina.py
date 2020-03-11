@@ -5,8 +5,6 @@
 # @Link    :
 # @Disc    : add remove show and list totp tokens in the terminal
 
-from __future__ import print_function
-
 import argparse
 import datetime
 import json
