@@ -5,6 +5,8 @@
 # @Link    :
 # @Disc    : add remove show and list totp tokens in the terminal
 
+from .clipboard import copy_text
+
 import argparse
 import datetime
 import json
@@ -98,6 +100,16 @@ def show(oid):
         print_expiry()
 
 
+# copy a token to clipboard
+def copy_token(oid):
+    tokens = load_tokens()
+    if tokens:
+        otp = gen_otp(tokens[int(oid)])
+        copy_text(otp)
+        print("{} copied to clipboard!".format(otp))
+        print_expiry()
+
+
 # add a new token
 def add(otp):
     try:
@@ -161,6 +173,10 @@ def main():
     show_parser = subparsers.add_parser("show", help="Show a token on-time")
     show_parser.add_argument("oid", help="oid of the token")
 
+    # Subparser for the copy command
+    copy_parser = subparsers.add_parser("copy", help="Copy a token on-time")
+    copy_parser.add_argument("oid", help="oid of the token")
+
     # Subparser for the import command
     import_parser = subparsers.add_parser("import", help="Import tokens from a local json file")
     import_parser.add_argument("file_path", help="path of the local json file")
@@ -182,6 +198,9 @@ def main():
     if command == "show":
         target_oid = args.oid
         show(target_oid)
+    if command == "copy":
+        target_oid = args.oid
+        copy_token(target_oid)
     if command == "import":
         file_path = args.file_path
         import_from(file_path)
