@@ -14,8 +14,6 @@ import logging
 import os
 import os.path
 import pyotp
-import sys
-import time
 
 
 # global variable
@@ -44,24 +42,12 @@ def upd_json(data, json_url):
         json.dump(data, f, sort_keys=True, indent=4, separators=(",", ":"))
 
 
-# show time process
-def time_process():
-    try:
-        sec = datetime.datetime.now().second
-        sharp_c = sec % 30
-        b = "#" * sharp_c + ""
-        while sharp_c <= 30:
-            expired_time = 30 - sharp_c
-            sys.stdout.write(
-                "expired after: [" + b.ljust(30) + "] " + str(expired_time).rjust(2) + "s\r"
-            )
-            sys.stdout.flush()
-            time.sleep(1)
-            b = "#" + b
-            sharp_c += 1
-        print("tokens have been expired, try to list or show again..")
-    except KeyboardInterrupt:
-        print("\nthe script has been quited manually.")
+# show expiry
+def print_expiry():
+    sec = datetime.datetime.now().second
+    sharp_c = sec % 30
+    expired_time = 30 - sharp_c
+    print("expires after: {}s".format(expired_time))
 
 
 # list all tokens
@@ -95,7 +81,7 @@ def list_tokens():
                 sep=" ",
             )
 
-        time_process()
+        print_expiry()
 
 
 # show a token on-time
@@ -129,7 +115,7 @@ def show(oid):
             sep=" ",
         )
 
-        time_process()
+        print_expiry()
 
 
 # add a new token
