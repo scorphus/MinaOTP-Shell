@@ -65,7 +65,7 @@ def time_process():
 
 
 # list all tokens
-def list():
+def list_tokens():
     try:
         tokens = load_json(JSON_URL)
     except IOError:
@@ -228,7 +228,7 @@ def main():
     command = arguments.pop("command")
 
     if command == "list":
-        list()
+        list_tokens()
     if command == "add":
         otp = {"secret": args.secret, "issuer": args.issuer, "remark": args.remark}
         add(otp)
