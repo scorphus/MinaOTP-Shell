@@ -43,7 +43,7 @@ def print_expiry():
     sec = datetime.datetime.now().second
     sharp_c = sec % 30
     expired_time = 30 - sharp_c
-    print("expires after: {}s".format(expired_time))
+    print("Expires in {}s".format(expired_time))
 
 
 # print a line
