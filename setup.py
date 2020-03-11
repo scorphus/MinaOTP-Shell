@@ -2,9 +2,6 @@
     https://github.com/MinaOTP/MinaOTP-Shell
 """
 
-# To use a consistent encoding
-from codecs import open
-from os import path
 # Always prefer setuptools over distutils
 from setuptools import find_packages
 from setuptools import setup
@@ -31,7 +28,10 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version="1.0.8",
     description="TOTP authenticator implement as a terminal tool",
-    long_description="TOTP authenticator implement as a terminal tool, and this project is developed in Python",
+    long_description=(
+        "TOTP authenticator implement as a terminal tool, and this project is "
+        "developed in Python"
+    ),
     # The project's main homepage.
     url="https://github.com/MinaOTP/MinaOTP-Shell",
     # Author details
@@ -90,5 +90,5 @@ setup(
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
-    entry_points={"console_scripts": ["mina=mina.mina:main",],},
+    entry_points={"console_scripts": ["mina=mina.mina:main"]},
 )

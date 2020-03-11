@@ -31,6 +31,7 @@ JSON_URL = os.path.expanduser("~") + os.sep + ".mina.json"
 # configure the basic logging level
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s")
 
+
 # load tokens from json file
 def load_json(json_url):
     with open(json_url, "r") as f:
@@ -194,7 +195,7 @@ def main():
     # Subparser for the list command
     logging.debug("Initial list subparser")
 
-    list_parser = subparsers.add_parser("list", help="List all tokens.")
+    subparsers.add_parser("list", help="List all tokens.")
 
     # Subparser for the add command
     logging.debug("Initial add subparser")
